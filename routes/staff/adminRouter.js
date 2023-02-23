@@ -8,7 +8,7 @@ const {
   adminUnwithdrawTeacher,
   adminWithdrawTeacher,
   deleteAdmin,
-  getAdmin,
+  getAdminProfile,
   getAllAdmins,
   loginAdmin,
   updateAdmin,
@@ -27,7 +27,7 @@ adminRouter.post("/login", loginAdmin);
 adminRouter.get("/", getAllAdmins);
 
 //get single admin
-adminRouter.get("/:id", isLoggedIn, getAdmin);
+adminRouter.get("/profile", isLoggedIn, getAdminProfile);
 
 //update admin
 adminRouter.put("/:id", updateAdmin);
