@@ -1,7 +1,9 @@
 const AsyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
 const Admin = require("../../models/Staff/Admin");
 const generateToken = require("../../utils/generateToken");
 const verifyToken = require("../../utils/verifyToken");
+const { hashPassword, isPasswordMatched } = require("../../utils/helpers");
 
 //@desc Register admin
 //@route POST /admins/register
@@ -19,12 +21,12 @@ exports.registerAdmin = AsyncHandler(async (req, res) => {
   const user = await Admin.create({
     name,
     email,
-    password,
+    password: await hashPassword(password),
   });
   res.status(201).json({
     status: "success",
     data: user,
-    message: "User registered successfully"
+    message: "User registered successfully",
   });
 });
 
@@ -42,71 +44,100 @@ exports.loginAdmin = AsyncHandler(async (req, res) => {
     });
   }
 
-  if (user && (await user.verifyPassword(password))) {
-
+  //verify password
+  const isMatched = await isPasswordMatched(password, user.password);
+  if (!isMatched) {
+    return res.json({ message: "Inavalid password" });
+  } else {
     return res.json({
       status: "success",
       token: generateToken(user._id),
-      message: "User logged in successfully"
-    });
-  } else {
-    return res.json({
-      message: "Invalid login credentials",
+      message: "User logged in successfully",
     });
   }
+});
 
-}
-)
 //@desc Get all admins
 //@route POST /admins
 //@access Private
-exports.getAllAdmins = (req, res) => {
-  try {
-    res.status(201).json({
-      status: "success",
-      data: "All admins",
-    });
-  } catch (error) {
-    res.json({
-      status: "failed",
-      data: error.message,
-    });
-  }
-};
+exports.getAllAdmins = AsyncHandler(async (req, res) => {
+  const admins = await Admin.find();
+  res.status(200).json({
+    status: "success",
+    message: "Admins fetched successfully",
+    data: admins,
+  });
+});
 
 //@desc Get single admin by Id
 //@route GET /admins/:id
 //@access Private
 exports.getAdminProfile = AsyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.userAuth._id).select("-password -createdAt -updatedAt")
+  const admin = await Admin.findById(req.userAuth._id).select(
+    "-password -createdAt -updatedAt"
+  );
   if (!admin) {
-    throw new Error('Admin not found')
+    throw new Error("Admin not found");
   } else {
     res.status(200).json({
       status: "success",
       data: admin,
-      message: "Admin profile fetched successfully"
-    })
+      message: "Admin profile fetched successfully",
+    });
   }
-
-})
+});
 
 //@desc Update single admin by Id
 //@route PUT /admins/:id
 //@access Private
-exports.updateAdmin = (req, res) => {
-  try {
-    res.status(201).json({
+exports.updateAdmin = AsyncHandler(async (req, res) => {
+  const { email, name, password } = req.body;
+  //if email is taken
+  const emailExist = await Admin.findOne({ email });
+  if (emailExist) {
+    throw new Error("Email is already taken.");
+  }
+
+   //check if user is updating password
+  if (password) {
+    //update with password
+    const admin = await Admin.findByIdAndUpdate(
+      req.userAuth._id,
+      {
+        email,
+        password: await hashPassword(password),
+        name,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.status(200).json({
       status: "success",
-      data: "Update admin",
+      data: admin,
+      message: "Admin profile updated successfully",
     });
-  } catch (error) {
-    res.json({
-      status: "failed",
-      data: error.message,
+  } else {
+    //update without password
+    const admin = await Admin.findByIdAndUpdate(
+      req.userAuth._id,
+      {
+        email,
+        name,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.status(200).json({
+      status: "success",
+      data: admin,
+      message: "Admin profile updated successfully",
     });
   }
-};
+});
 
 //@desc Delete single admin by Id
 //@route DELETE /admins/:id
