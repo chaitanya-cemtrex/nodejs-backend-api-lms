@@ -73,9 +73,9 @@ exports.getAllAdmins = AsyncHandler(async (req, res) => {
 //@route GET /admins/:id
 //@access Private
 exports.getAdminProfile = AsyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.userAuth._id).select(
-    "-password -createdAt -updatedAt"
-  );
+  const admin = await Admin.findById(req.userAuth._id)
+    .select("-password -createdAt -updatedAt")
+    .populate("academicYears");
   if (!admin) {
     throw new Error("Admin not found");
   } else {
@@ -98,7 +98,7 @@ exports.updateAdmin = AsyncHandler(async (req, res) => {
     throw new Error("Email is already taken.");
   }
 
-   //check if user is updating password
+  //check if user is updating password
   if (password) {
     //update with password
     const admin = await Admin.findByIdAndUpdate(
