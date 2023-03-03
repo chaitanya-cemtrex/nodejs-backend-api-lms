@@ -47,35 +47,34 @@ exports.getYearGroups = AsyncHandler(async (req, res) => {
   });
 });
 
-//@desc Get single Subject
+//@desc Get single year group
 //@route GET /year-groups/:id
 //@access Private
-exports.getSubject = AsyncHandler(async (req, res) => {
-  const subject = await Subject.findById(req.params.id);
+exports.getYearGroup = AsyncHandler(async (req, res) => {
+  const yearGroups = await YearGroup.findById(req.params.id);
 
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
-    message: "Subject fetched successfully.",
-    data: subject,
+    message: "Year Group fetched successfully.",
+    data: yearGroups,
   });
 });
 
-//@desc   Update  subject
+//@desc   Update  year group
 //@route  PUT /api/v1/year-groups/:id
 //@acess  Private
-exports.updateSubject = AsyncHandler(async (req, res) => {
-  const { name, description, academicTerm } = req.body;
+exports.updateYearGroup = AsyncHandler(async (req, res) => {
+  const { name, academicYear } = req.body;
   //check name exists
-  const subjectFound = await Subject.findOne({ name });
-  if (subjectFound) {
-    throw new Error("Subject already exists");
+  const yearGroupFound = await YearGroup.findOne({ name });
+  if (yearGroupFound) {
+    throw new Error("year group already exists");
   }
-  const subject = await Subject.findByIdAndUpdate(
+  const yearGroup = await YearGroup.findByIdAndUpdate(
     req.params.id,
     {
       name,
-      description,
-      academicTerm,
+      academicYear,
       createdBy: req.userAuth._id,
     },
     {
@@ -85,19 +84,19 @@ exports.updateSubject = AsyncHandler(async (req, res) => {
 
   res.status(200).json({
     status: "success",
-    message: "Subject updated successfully",
-    data: subject,
+    message: "Year group updated successfully",
+    data: yearGroup,
   });
 });
 
-//@desc Delete Subject
+//@desc Delete year group
 //@route DELETE /year-groups/:id
 //@access Private
-exports.deleteSubject = AsyncHandler(async (req, res) => {
-  await Subject.findByIdAndDelete(req.params.id);
+exports.deleteYearGroup = AsyncHandler(async (req, res) => {
+  await YearGroup.findByIdAndDelete(req.params.id);
 
   res.status(201).json({
     status: "success",
-    message: "Subject deleted successfully.",
+    message: "Year group deleted successfully.",
   });
 });
