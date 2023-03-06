@@ -32,25 +32,21 @@ const examResultSchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ["failed", "passed"],
-      default: "failed",
+      enum: ["Pass", "Fail"],
+      default: "Fail",
     },
     //Excellent/Good/Poor
     remarks: {
       type: String,
       required: true,
-      enum: ["Excellent", "Good", "Poor"],
+      enum: ["Excellent", "Very Good", "Good", "Poor"],
       default: "Poor",
     },
     position: {
       type: Number,
-      required: true,
+      required: false,
     },
 
-    subject: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Subject",
-    },
     classLevel: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ClassLevel",
