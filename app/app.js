@@ -9,6 +9,7 @@ const academicYearRouter = require("../routes/academics/academicYear");
 const classLevelRouter = require("../routes/academics/classLevel");
 const examRouter = require("../routes/academics/exam");
 const programRouter = require("../routes/academics/program");
+const questionRouter = require("../routes/academics/question");
 const subjectRouter = require("../routes/academics/subject");
 const yearGroupRouter = require("../routes/academics/yearGroup");
 const adminRouter = require("../routes/staff/adminRouter");
@@ -32,6 +33,7 @@ app.use("/api/v1/year-groups", yearGroupRouter);
 app.use("/api/v1/teachers", teacherRouter);
 app.use("/api/v1/exams", examRouter);
 app.use("/api/v1/students", studentRouter);
+app.use("/api/v1/questions", questionRouter);
 
 //error handler middlewares
 app.use(notFoundError);
