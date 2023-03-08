@@ -14,7 +14,12 @@ const {
   updateAdmin,
 } = require("../../controllers/staff/adminController");
 const isAdmin = require("../../middlewares/isAdmin");
+const isAuthenticated = require("../../middlewares/isAuthenticated");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
+const roleRestriction = require("../../middlewares/roleRestriction");
+const Admin = require("../../models/Staff/Admin");
+
+
 
 const adminRouter = express.Router();
 
@@ -27,7 +32,7 @@ adminRouter.post("/login", loginAdmin);
 adminRouter.get("/", isLoggedIn, isAdmin, getAllAdmins);
 
 //get single admin
-adminRouter.get("/profile", isLoggedIn, isAdmin, getAdminProfile);
+adminRouter.get("/profile", isAuthenticated(Admin), roleRestriction("admin", "teacher"), getAdminProfile);
 
 //update admin
 adminRouter.put("/", isLoggedIn, isAdmin, updateAdmin);
