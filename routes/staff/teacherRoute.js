@@ -8,6 +8,7 @@ const {
   teacherUpdateProfile,
   adminUpdateTeacher,
 } = require("../../controllers/staff/teacherController");
+const advancedResults = require("../../middlewares/advancedResults");
 const isAdmin = require("../../middlewares/isAdmin");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
 const isTeacher = require("../../middlewares/isTeacher");
@@ -22,7 +23,13 @@ teacherRouter.post(
   adminRegisterTeacher
 );
 teacherRouter.post("/login", loginTeacher);
-teacherRouter.get("/admin", isLoggedIn, isAdmin, getAllTeachersAdmin);
+teacherRouter.get(
+  "/admin",
+  isLoggedIn,
+  isAdmin,
+  advancedResults(),
+  getAllTeachersAdmin
+);
 teacherRouter.get("/:teacherId/admin", isLoggedIn, isAdmin, getTeacherByAdmin);
 teacherRouter.get("/profile", isTeacherLoggedIn, isTeacher, getTeacherProfile);
 teacherRouter.put(

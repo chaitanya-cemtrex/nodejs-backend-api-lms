@@ -11,8 +11,8 @@ const isTeacherLoggedIn = require("../../middlewares/isTeacherLoggedIn");
 const examRouter = express.Router();
 
 examRouter
-  .route("/", isTeacherLoggedIn, isTeacher)
-  .post(createExam)
+  .route("/")
+  .post(isTeacherLoggedIn, isTeacher, createExam)
   .get(getExams);
 
 examRouter

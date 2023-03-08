@@ -22,6 +22,7 @@ exports.createExam = AsyncHandler(async (req, res) => {
   } = req.body;
 
   //find teacher
+  console.log("User Id from req =>", req.userAuth);
   const teacherFound = await Teacher.findById(req.userAuth?._id);
   if (!teacherFound) {
     throw new Error("Teacher not found");
@@ -67,8 +68,8 @@ exports.getExams = AsyncHandler(async (req, res) => {
   const exams = await Exam.find().populate({
     path: "questions",
     populate: {
-      path: 'createdBy'
-    }
+      path: "createdBy",
+    },
   });
 
   res.status(201).json({

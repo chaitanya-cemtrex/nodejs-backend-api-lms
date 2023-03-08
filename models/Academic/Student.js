@@ -23,7 +23,7 @@ const studentSchema = new mongoose.Schema(
           Date.now().toString().slice(2, 4) +
           this.name
             .split(" ")
-            .map(name => name[0])
+            .map((name) => name[0])
             .join("")
             .toUpperCase()
         );
@@ -37,7 +37,7 @@ const studentSchema = new mongoose.Schema(
     //keep track of the class level the student is in
     classLevels: [
       {
-        type: String
+        type: String,
       },
     ],
     currentClassLevel: {
@@ -108,7 +108,7 @@ const studentSchema = new mongoose.Schema(
     // ],
     //year group
     yearGraduated: {
-      type: String,
+      type: Date,
     },
   },
   {
